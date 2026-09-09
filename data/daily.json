@@ -1,0 +1,230 @@
+{
+  "generated_at": "2026-09-09T00:26:54Z",
+  "status": "ok",
+  "model_version": "2.0.0-research",
+  "umsi": {
+    "value": 63.6,
+    "core_value": 63.6,
+    "live_value": 70.0,
+    "regime": "NEUTRAL",
+    "core_quality": 1.0,
+    "live_quality": 1.0,
+    "calculation_quality": 1.0
+  },
+  "stress": {
+    "value": 34.6,
+    "core_value": 34.6,
+    "live_value": 27.9,
+    "status": "LOW",
+    "quality": 1.0,
+    "live_quality": 1.0
+  },
+  "fragility": {
+    "value": 51.3,
+    "core_value": 51.3,
+    "live_value": 55.2,
+    "status": "MODERATE",
+    "quality": 1.0,
+    "live_quality": 1.0
+  },
+  "market": {
+    "sp500": {
+      "value": 7673.52,
+      "change_pct": -0.58,
+      "drawdown_52w": -1.61,
+      "status": "Near 52W High",
+      "source_date": "2026-09-08",
+      "updated_at": "2026-09-09T00:26:54Z",
+      "stale": false
+    },
+    "trend_assets": {
+      "qqq": {
+        "symbol": "QQQ",
+        "price": 718.96,
+        "source_date": "2026-09-08",
+        "stale": false,
+        "ma20": 717.44,
+        "ma50": 710.76,
+        "ma200": 659.42,
+        "above_ma20": true,
+        "above_ma50": true,
+        "above_ma200": true,
+        "ma200_slope_20d": 1.61,
+        "relative_strength_63d": -3.58,
+        "realized_volatility_20d": 12.8,
+        "trend_score": 95.0,
+        "recent_reclaim": true
+      },
+      "soxx": {
+        "symbol": "SOXX",
+        "price": 519.86,
+        "source_date": "2026-09-08",
+        "stale": false,
+        "ma20": 522.23,
+        "ma50": 533.54,
+        "ma200": 437.04,
+        "above_ma20": false,
+        "above_ma50": false,
+        "above_ma200": true,
+        "ma200_slope_20d": 5.52,
+        "relative_strength_63d": -14.87,
+        "realized_volatility_20d": 32.3,
+        "trend_score": 45.0,
+        "recent_reclaim": false
+      },
+      "smh": {
+        "symbol": "SMH",
+        "price": 567.01,
+        "source_date": "2026-09-08",
+        "stale": false,
+        "ma20": 565.0,
+        "ma50": 570.5,
+        "ma200": 482.6,
+        "above_ma20": true,
+        "above_ma50": false,
+        "above_ma200": true,
+        "ma200_slope_20d": 4.67,
+        "relative_strength_63d": -10.62,
+        "realized_volatility_20d": 30.1,
+        "trend_score": 60.0,
+        "recent_reclaim": true
+      }
+    }
+  },
+  "decision": {
+    "state": "HOLD_NO_CHASE",
+    "label": "Hold / No Chase",
+    "trend_score": 62.5,
+    "trend_quality": 1.0,
+    "research_exposure_score": 70,
+    "reasons": [
+      "Combined QQQ/semiconductor trend score is 62.5",
+      "UMSI Core is 63.6",
+      "Stress is 34.6",
+      "Trend remains constructive, but no fresh confirmation supports chasing"
+    ],
+    "confirmation_rule": "Signals are calculated at the close and apply no earlier than the next session.",
+    "notice": "Research and simulation only; not an instruction to trade."
+  },
+  "indicators": {
+    "term": {
+      "label": "VIX / VIX3M Term Structure",
+      "raw_value": 0.8688,
+      "percentile": 39.0,
+      "score": 61.0,
+      "weight": 0.2,
+      "effective_weight": 0.2,
+      "contribution": 12.2,
+      "status": "Neutral",
+      "source_date": "2026-09-08",
+      "updated_at": "2026-09-09T00:26:54Z",
+      "stale": false
+    },
+    "credit": {
+      "label": "High Yield Credit Spread / OAS",
+      "raw_value": 2.68,
+      "percentile": 8.0,
+      "score": 92.0,
+      "weight": 0.2,
+      "effective_weight": 0.2,
+      "contribution": 18.4,
+      "status": "Complacent",
+      "source_date": "2026-09-08",
+      "updated_at": "2026-09-09T00:26:54Z",
+      "stale": false
+    },
+    "breadth": {
+      "label": "Market Breadth (RSP/SPY Proxy)",
+      "raw_value": -0.0063,
+      "percentile": 61.0,
+      "score": 61.0,
+      "weight": 0.2,
+      "effective_weight": 0.2,
+      "contribution": 12.2,
+      "status": "Neutral",
+      "source_date": "2026-09-08",
+      "updated_at": "2026-09-09T00:26:54Z",
+      "stale": false
+    },
+    "vix": {
+      "label": "VIX Level",
+      "raw_value": 15.3,
+      "percentile": 24.5,
+      "score": 75.5,
+      "weight": 0.15,
+      "effective_weight": 0.15,
+      "contribution": 11.32,
+      "status": "Risk-On",
+      "source_date": "2026-09-08",
+      "updated_at": "2026-09-09T00:26:54Z",
+      "stale": false
+    },
+    "put_call": {
+      "label": "Equity Put/Call Ratio",
+      "raw_value": 0.58,
+      "percentile": 36.4,
+      "score": 63.6,
+      "weight": 0.1,
+      "effective_weight": 0.1,
+      "contribution": 6.36,
+      "status": "Neutral",
+      "source_date": "2026-09-04",
+      "updated_at": "2026-09-09T00:26:54Z",
+      "stale": false
+    },
+    "drawdown": {
+      "label": "S&P 500 52-Week Drawdown",
+      "raw_value": -0.0161,
+      "percentile": 55.9,
+      "score": 55.9,
+      "weight": 0.1,
+      "effective_weight": 0.1,
+      "contribution": 5.59,
+      "status": "Neutral",
+      "source_date": "2026-09-08",
+      "updated_at": "2026-09-09T00:26:54Z",
+      "stale": false
+    },
+    "aaii": {
+      "label": "AAII Bull-Bear Spread",
+      "raw_value": 2.1,
+      "percentile": 78.3,
+      "score": 78.3,
+      "weight": 0.05,
+      "effective_weight": 0.05,
+      "contribution": 3.92,
+      "status": "Risk-On",
+      "source_date": "2026-09-02",
+      "updated_at": "2026-09-09T00:26:54Z",
+      "stale": false
+    }
+  },
+  "sources": [
+    {
+      "name": "FRED",
+      "url": "https://fred.stlouisfed.org/",
+      "use": "VIX, VIX3M, ICE BofA High Yield OAS"
+    },
+    {
+      "name": "Cboe",
+      "url": "https://www.cboe.com/us/options/market_statistics/daily/",
+      "use": "Equity Put/Call Ratio; official 2006–2019 reference archive + recent daily bootstrap"
+    },
+    {
+      "name": "AAII",
+      "url": "https://www.aaii.com/sentimentsurvey/sent_results",
+      "use": "Weekly Bull-Bear Sentiment"
+    },
+    {
+      "name": "Stooq",
+      "url": "https://stooq.com/",
+      "use": "Fallback long-run S&P 500 / SPY / RSP price history"
+    },
+    {
+      "name": "Yahoo Finance",
+      "url": "https://finance.yahoo.com/",
+      "use": "Primary price history, QQQ/SOXX/SMH trend inputs and intraday market snapshot"
+    }
+  ],
+  "methodology_note": "Dense daily indicators use 5-year rolling percentiles. Sparse Cboe put/call and AAII series use percentiles over the last N actual observations, not forward-filled calendar rows. Delayed FRED observations may be carried forward for up to three market rows while retaining the true source_date. calculation_quality reports the target model weight available before re-normalization. UMSI Core uses fixed long-history factors for comparability; UMSI Live adds AAII and put/call when available. Decision states use unleveraged benchmarks and apply at the next session only."
+}

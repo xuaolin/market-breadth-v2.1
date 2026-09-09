@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="UMSI - US Market Sentiment Index dashboard" />
+  <title>UMSI Market Sentiment Terminal</title>
+  <link rel="stylesheet" href="css/style.css?v=20260909a" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.1.0/dist/chartjs-plugin-annotation.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.2.0/dist/chartjs-plugin-zoom.min.js"></script>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div class="brand">
+        <h1>UMSI // US MARKET SENTIMENT TERMINAL</h1>
+        <p>Percentile-normalized multi-factor sentiment, financial stress and market fragility monitor</p>
+      </div>
+      <div class="header-status">
+        <span id="lastUpdated">Awaiting first update</span>
+        <span id="freshnessBadge" class="badge stale">STALE DATA</span>
+      </div>
+    </header>
+
+    <div id="systemMessage" class="system-message" hidden></div>
+
+    <section class="top-grid">
+      <div class="metric" id="umsiMetric">
+        <div class="metric-label">UMSI · 0–100 <span id="degradeBadge" class="degrade-badge" hidden title="Model running with missing or low-quality factors">DEGRADED MODEL · 模型降级</span></div>
+        <div id="umsiValue" class="metric-value">—</div>
+        <div id="umsiRegime" class="metric-sub">—</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Stress Index <span id="stressQuality" class="quality-chip" hidden></span></div>
+        <div id="stressValue" class="metric-value">—</div>
+        <div id="stressStatus" class="metric-sub">—</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Fragility Index <span id="fragilityQuality" class="quality-chip" hidden></span></div>
+        <div id="fragilityValue" class="metric-value">—</div>
+        <div id="fragilityStatus" class="metric-sub">—</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Snapshot</div>
+        <div id="regimeValue" class="metric-value small">—</div>
+        <div id="qualityValue" class="metric-sub">—</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">S&amp;P 500</div>
+        <div id="sp500Value" class="metric-value small">—</div>
+        <div id="sp500Change" class="metric-sub">—</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">S&amp;P State</div>
+        <div id="sp500State" class="metric-value small">—</div>
+        <div class="metric-sub">52-week drawdown regime</div>
+      </div>
+    </section>
+
+    <section class="decision-panel" aria-labelledby="decisionTitle">
+      <div class="decision-main">
+        <div class="metric-label" id="decisionTitle">Research Decision State</div>
+        <div id="decisionState" class="decision-state">—</div>
+        <div id="decisionNotice" class="metric-sub">Signals apply no earlier than the next session.</div>
+      </div>
+      <div class="decision-score">
+        <span class="metric-label">QQQ + Semiconductor Trend</span>
+        <strong id="decisionTrendScore">—</strong>
+        <span id="decisionExposure" class="metric-sub">Research score only</span>
+      </div>
+      <div id="trendAssets" class="trend-assets"></div>
+      <ul id="decisionReasons" class="decision-reasons"></ul>
+    </section>
+
+    <section class="grid-2">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">UMSI Historical Regime</div>
+            <div class="panel-subtitle">&lt;15 Extreme Fear · &gt;90 Extreme Complacency</div>
+          </div>
+          <div class="chart-controls">
+            <div class="series-chips" role="group" aria-label="Series visibility">
+              <button type="button" class="series-chip active" data-series="UMSI" aria-pressed="true" title="Toggle UMSI line">UMSI</button>
+              <button type="button" class="series-chip stress" data-series="Stress" aria-pressed="false" title="Overlay Stress (0-100)">Stress</button>
+              <button type="button" class="series-chip fragility" data-series="Fragility" aria-pressed="false" title="Overlay Fragility (0-100)">Fragility</button>
+              <button type="button" class="series-chip spx" data-series="SPX" aria-pressed="false" title="Overlay S&amp;P 500 on right axis">SPX</button>
+              <button type="button" class="series-chip lowq" id="hideLowQChip" aria-pressed="false" title="Hide UMSI points with model quality &lt; 85% (default off)">Hide low-q</button>
+            </div>
+            <div class="range-buttons">
+              <button data-range="1Y">1Y</button><button data-range="3Y">3Y</button><button data-range="5Y" class="active">5Y</button><button data-range="10Y">10Y</button><button data-range="MAX">MAX</button>
+            </div>
+          </div>
+        </div>
+        <div class="chart-hint chart-hint-top" role="note">
+          <span class="hint-key">Click any day</span> for metrics + factors ·
+          <span class="hint-key">Orange markers</span> = named events ·
+          Drag to brush · Shift+drag pan · Ctrl+wheel zoom · Esc closes detail
+        </div>
+        <div id="chartFocusBanner" class="chart-focus-banner" hidden></div>
+        <div class="panel-body chart-wrap"><canvas id="historyChart" aria-label="UMSI history chart with brush zoom" role="img"></canvas></div>
+        <div class="chart-hint">Series chips / legend toggle Stress, Fragility &amp; SPX overlays (off by default). Esc closes the day detail panel / clears indicator focus.</div>
+        <div id="rangeSummary" class="range-summary" hidden></div>
+        <div id="eventDetail" class="event-detail" hidden aria-hidden="true"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Core Indicators</div><div class="panel-subtitle">Higher score = more risk-on · click row to focus chart</div></div>
+        <div class="panel-body" style="padding:0; overflow:auto; max-height:420px;">
+          <table id="indicatorTable">
+            <thead><tr><th>Indicator</th><th>Current</th><th>Hist. %ile</th><th>Score</th><th>Weight</th><th>Contribution</th><th>Status</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid-2">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Forward Returns by UMSI Zone</div>
+            <div class="panel-subtitle">Confirmed on day 5 · mean / σ / %+ / excess vs buy-and-hold · n&lt;30 grey</div>
+          </div>
+          <label class="sync-chip" title="Recompute forward returns using only points in the brushed chart window">
+            <input type="checkbox" id="syncForwardToggle" />
+            <span>Sync to chart window</span>
+          </label>
+        </div>
+        <div id="forwardRangeNote" class="panel-note" hidden></div>
+        <div class="panel-body" style="padding:0;">
+          <table id="forwardTable"><thead><tr><th>UMSI Zone</th><th>Obs.</th><th>1M</th><th>3M</th><th>6M</th><th>12M</th></tr></thead><tbody></tbody></table>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Historical Extreme Events</div><div class="panel-subtitle">Event dates are configurable in calculate_umsi.py</div></div>
+        <div class="panel-body" style="padding:0; overflow:auto; max-height:300px;">
+          <table id="eventsTable"><thead><tr><th>Date</th><th>Event</th><th>UMSI</th><th>Stress</th><th>Fragility</th><th>1M</th><th>3M</th><th>6M</th></tr></thead><tbody></tbody></table>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel validation-panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">Out-of-Sample Validation · 2018+</div>
+          <div class="panel-subtitle">Fixed rules · next-session simulation · 10 bps/full turn · research only</div>
+        </div>
+      </div>
+      <div id="validationSummary" class="validation-summary"></div>
+      <div class="panel-body validation-table-wrap">
+        <table id="validationTable">
+          <thead><tr><th>UMSI Core Zone</th><th>Confirmed samples</th><th>3M mean</th><th>3M median</th><th>Positive</th><th>Worst</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="method-grid">
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Methodology</div></div>
+        <div class="panel-body">
+          <div class="formula">UMSI Core = fixed T/B/V/D weights · UMSI Live = 0.20T + 0.20C + 0.20B + 0.15V + 0.10P + 0.10D + 0.05A</div>
+          <div class="notes">
+            Historical charts and forward-return studies use the fixed-composition UMSI Core. UMSI Live adds AAII and put/call without changing the historical benchmark. Scores use trailing historical percentiles. Fear-oriented raw variables are inverted so 100 is risk-on. Market breadth uses an RSP-versus-SPY relative-performance proxy in this free-data version.<br><br>
+            Stress = term structure + credit + VIX + drawdown pressure. Fragility = low-volatility complacency + curve complacency + narrow breadth + AAII optimism + low put/call + concentration proxy + price stretch. Fragility is a vulnerability measure, not a forecast.
+            <div id="shortSampleNote" class="short-sample-note" hidden></div>
+            <div id="methodologyNoteLive" class="methodology-live" hidden></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Data Sources</div></div>
+        <div class="panel-body"><div id="sourceList" class="sources"></div></div>
+      </div>
+    </section>
+
+    <footer>Research dashboard only. Data can be delayed, revised or unavailable. Historical relationships do not guarantee future returns.</footer>
+  </main>
+  <script type="module" src="js/app.js?v=20260909a"></script>
+</body>
+</html>
